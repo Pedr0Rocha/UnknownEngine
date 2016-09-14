@@ -1,0 +1,7 @@
+cmake_minimum_required (VERSION 2.8.8)
+
+project (Unknown0.1)
+
+include_directories ("${PROJECT_SOURCE_DIR}/include")
+
+add_subdirectory (lib)
