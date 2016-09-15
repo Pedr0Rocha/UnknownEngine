@@ -1,5 +1,5 @@
 /* namespace starts with lowercase */
-namespace ukn {
+namespace unk {
 	/* class starts with uppercase */
 	class Unknown {
 		/* attribute starts with uppercase */
@@ -16,7 +16,7 @@ namespace ukn {
 
 /* function starts with uppercase */
 void PrintClassAttr() {
-	ukn::Unknown objUnk;
+	unk::Unknown objUnk;
 	objUnk.printAttr(5);
 }
 
