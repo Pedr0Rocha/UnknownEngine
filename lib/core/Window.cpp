@@ -17,6 +17,22 @@ SDL_Renderer* unk::Window::CreateRenderer(int index, Uint32 flags) {
 	return renderer;
 }
 
+int unk::Window::SetWindowFullscreen() {
+	return SDL_SetWindowFullscreen(SDLWindow, SDL_WINDOW_FULLSCREEN);
+}
+
+void unk::Window::MinimizeWindow() {
+	SDL_MinimizeWindow(SDLWindow);
+}
+
+void unk::Window::MaximizeWindow() {
+	SDL_MaximizeWindow(SDLWindow);
+}
+
+void unk::Window::RestoreWindow() {
+	SDL_RestoreWindow(SDLWindow);
+}
+
 void unk::Window::DestroyWindow() {
 	SDL_DestroyWindow(SDLWindow);
 }
