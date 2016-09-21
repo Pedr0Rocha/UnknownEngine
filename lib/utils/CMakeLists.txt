@@ -1,2 +1,3 @@
 add_library (UNKUtils
-	Rect.cpp)
+	Rect.cpp
+  SDLException.cpp)
