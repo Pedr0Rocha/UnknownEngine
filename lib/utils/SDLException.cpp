@@ -2,10 +2,16 @@
 
 #include "unk/utils/SDLException.h"
 
-unk::SDLException::SDLException() : std::runtime_error(SDL_GetError()) {
+std::string unk::SDLException::prefixMessage = "SDL error: ";
 
+unk::SDLException::SDLException() {
+    message = prefixMessage + SDL_GetError();
 }
 
-unk::SDLException::SDLException(std::string message) : std::runtime_error(message) {
+unk::SDLException::SDLException(std::string message) {
+    this->message = prefixMessage + message;
+}
 
+const char *unk::SDLException::what() const throw() {
+    return message.c_str();
 }
