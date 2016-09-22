@@ -3,6 +3,7 @@
 #include "SDL2/SDL_image.h"
 
 #include "unk/core/Resources.h"
+#include "unk/utils/SDLException.h"
 
 std::shared_ptr<unk::Resources> unk::Resources::ResourcesPtr = nullptr;
 
@@ -33,9 +34,22 @@ void unk::Resources::loadTexture(TextureInfo info, std::shared_ptr<Renderer> ren
     registerTexture(info);
 
     if (!resources->Map[info]) {
-        SDL_Surface *surface = IMG_Load(info.getName().c_str());
-        SDL_Texture *texture = renderer->createTextureFromSurface(surface);
-        resources->Map[info] = texture;
+
+        SDL_Surface *surface = nullptr;
+        SDL_Texture *texture = nullptr;
+
+        try {
+            surface = IMG_Load(info.getName().c_str());
+            if (surface == nullptr)
+                throw SDLException();
+
+            texture = renderer->createTextureFromSurface(surface);
+            resources->Map[info] = texture;
+
+        } catch (SDLException e) {
+            // Handle the error
+        }
+
     }
 }
 
