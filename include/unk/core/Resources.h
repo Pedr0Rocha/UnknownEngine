@@ -15,17 +15,20 @@
 namespace unk {
     class Resources {
         private:
-            static std::shared_ptr<Resources> ResourcesPtr;
             std::map<TextureInfo, SDL_Texture*> Map;
 
-            static std::shared_ptr<Resources> getResources();
-            bool hasTexture(TextureInfo info);
+            Resources();
 
         public:
-            static void loadAllTextures(std::shared_ptr<Renderer> renderer);
-            static void loadTexture(TextureInfo info, std::shared_ptr<Renderer> renderer);
-            static void registerTexture(TextureInfo info);
-            static SDL_Texture *getTexture(TextureInfo info);
+            static Resources& getResources();
+
+            bool hasTexture(TextureInfo info);
+
+            void loadAllTextures(std::shared_ptr<Renderer> renderer);
+            void loadTexture(TextureInfo info, std::shared_ptr<Renderer> renderer);
+            void registerTexture(TextureInfo info);
+            void getTextureMeasures(TextureInfo info, int *width, int *height);
+            SDL_Texture *getTexture(TextureInfo info);
     };
 }
 

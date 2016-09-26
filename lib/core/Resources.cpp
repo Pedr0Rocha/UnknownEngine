@@ -5,23 +5,20 @@
 #include "unk/core/Resources.h"
 #include "unk/utils/SDLException.h"
 
-std::shared_ptr<unk::Resources> unk::Resources::ResourcesPtr = nullptr;
+unk::Resources::Resources() {
+}
 
-std::shared_ptr<unk::Resources> unk::Resources::getResources() {
-    if (!ResourcesPtr.get())
-        ResourcesPtr.reset(new Resources());
-
-    return ResourcesPtr;
+unk::Resources& unk::Resources::getResources() {
+    static Resources resources;
+    return resources;
 }
 
 bool unk::Resources::hasTexture(TextureInfo info) {
-    std::shared_ptr<Resources> resources = getResources();
-    return resources->Map.count(info) > 0;
+    return Map.count(info) > 0;
 }
 
 void unk::Resources::loadAllTextures(std::shared_ptr<Renderer> renderer) {
-    std::shared_ptr<Resources> resources = getResources();
-    for (auto mapPair : resources->Map) {
+    for (auto mapPair : Map) {
         if (!mapPair.second) {
             loadTexture(mapPair.first, renderer);
         }
@@ -29,11 +26,9 @@ void unk::Resources::loadAllTextures(std::shared_ptr<Renderer> renderer) {
 }
 
 void unk::Resources::loadTexture(TextureInfo info, std::shared_ptr<Renderer> renderer) {
-    std::shared_ptr<Resources> resources = getResources();
-
     registerTexture(info);
 
-    if (!resources->Map[info]) {
+    if (!Map[info]) {
 
         SDL_Surface *surface = nullptr;
         SDL_Texture *texture = nullptr;
@@ -44,7 +39,7 @@ void unk::Resources::loadTexture(TextureInfo info, std::shared_ptr<Renderer> ren
                 throw SDLException();
 
             texture = renderer->createTextureFromSurface(surface);
-            resources->Map[info] = texture;
+            Map[info] = texture;
 
         } catch (SDLException e) {
             // Handle the error
@@ -54,17 +49,18 @@ void unk::Resources::loadTexture(TextureInfo info, std::shared_ptr<Renderer> ren
 }
 
 void unk::Resources::registerTexture(TextureInfo info) {
-    std::shared_ptr<Resources> resources = getResources();
+    if (!hasTexture(info))
+        Map[info] = nullptr;
+}
 
-    if (!resources->hasTexture(info))
-        resources->Map[info] = nullptr;
+void unk::Resources::getTextureMeasures(TextureInfo info, int *width, int *height) {
+    if (hasTexture(info) && Map[info])
+        SDL_QueryTexture(Map[info], nullptr, nullptr, width, height);
 }
 
 SDL_Texture *unk::Resources::getTexture(TextureInfo info) {
-    std::shared_ptr<Resources> resources = getResources();
-
-    if (resources->hasTexture(info))
-        return resources->Map[info];
+    if (hasTexture(info))
+        return Map[info];
 
     return nullptr;
 }
