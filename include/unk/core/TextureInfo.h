@@ -9,11 +9,18 @@ namespace unk {
     class TextureInfo {
         private:
             std::string Name;
+            int Width;
+            int Height;
 
         public:
             TextureInfo(std::string name);
 
             std::string getName() const;
+            int getWidth();
+            int getHeight();
+
+        private:
+            void getMeasures();
 
     };
 }
