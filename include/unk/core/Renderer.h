@@ -6,6 +6,7 @@
 #include "unk/core/TextureInfo.h"
 #include "unk/utils/Point.h"
 #include "unk/utils/Rect.h"
+#include "unk/utils/Color.h"
 
 #include <vector>
 
@@ -23,6 +24,7 @@ namespace unk {
         private:
             SDL_Renderer *SDLRenderer;
             SDL_RendererInfo Info;
+            Color DrawColor;
 
         public:
             /**
@@ -61,44 +63,61 @@ namespace unk {
             /// @brief Clears the current rendering target.
             void clear();
 
-            /// @brief Renders the texture at the point @p dest.
-            void renderTexture(TextureInfo info, Point dest);
-            /// @brief Renders the texture at the point @p dest rotated by
+            /// @brief Draws the texture at the point @p dest.
+            void drawTexture(TextureInfo info, Point dest);
+            /// @brief Draws the texture at the point @p dest rotated by
             /// @p angle degrees.
-            void renderTexture(TextureInfo info, Point dest, double angle,
+            void drawTexture(TextureInfo info, Point dest, double angle,
                     Point ref);
-            /// @brief Renders the texture at the point @p dest flipped as
+            /// @brief Draws the texture at the point @p dest flipped as
             /// specified in the vector @p flip.
-            void renderTexture(TextureInfo info, Point dest,
+            void drawTexture(TextureInfo info, Point dest,
                     std::vector<Flip> flip);
-            /// @brief Renders the texture at the point @p dest rotated by
+            /// @brief Draws the texture at the point @p dest rotated by
             /// @p angle degrees and flipped as specified in @p flip.
-            void renderTexture(TextureInfo info, Point dest, double angle,
+            void drawTexture(TextureInfo info, Point dest, double angle,
                     Point ref, std::vector<Flip> flip);
 
-            /// @brief Renders the texture inside the rectangle @p srcR
+            /// @brief Draws the texture inside the rectangle @p srcR
             /// into @p dstR.
-            void renderTexture(TextureInfo info, Rect srcR, Rect dstR);
-            /// @brief Renders the texture inside the rectangle @p srcR
+            void drawTexture(TextureInfo info, Rect srcR, Rect dstR);
+            /// @brief Draws the texture inside the rectangle @p srcR
             /// into @p dstR rotated by @p angle degrees.
-            void renderTexture(TextureInfo info, Rect srcR, Rect dstR,
+            void drawTexture(TextureInfo info, Rect srcR, Rect dstR,
                     double angle, Point ref);
-            /// @brief Renders the texture inside the rectangle @p srcR
+            /// @brief Draws the texture inside the rectangle @p srcR
             /// into @p dstR flipped as specified in @p flip.
-            void renderTexture(TextureInfo info, Rect srcR, Rect dstR,
+            void drawTexture(TextureInfo info, Rect srcR, Rect dstR,
                     std::vector<Flip> flip);
-            /// @brief Renders the texture inside the rectangle @p srcR
+            /// @brief Draws the texture inside the rectangle @p srcR
             /// into @p dstR rotated by @p angle degrees and flipped as
             /// specified in @p flip.
-            void renderTexture(TextureInfo info, Rect srcR, Rect dstR,
+            void drawTexture(TextureInfo info, Rect srcR, Rect dstR,
                     double angle, Point ref, std::vector<Flip> flip);
+
+            /// @brief Sets the drawing color.
+            void setDrawColor(Color color);
+            /// @brief Returns the drawing color.
+            Color getDrawColor();
+
+            /// @brief Draw the @p Point objects specified.
+            void drawPoints(std::vector<Point> points);
+            /// @brief Draw the lines specified by each two @p Point objects.
+            void drawLines(std::vector<Point> points);
+            /// @brief Draw the @p Rect objects specified.
+            void drawRects(std::vector<Rect> rects, bool fill = false,
+                    bool sameColor = true, Color color = { 0, 0, 0, 0 });
+
+            /// @brief Actually renders the intern buffer into the Window.
+            void render();
 
             /// @brief Creates a texture from a surface.
             SDL_Texture *createTextureFromSurface(SDL_Surface *surface);
 
         private:
             void initRenderer(std::vector<Flags> flags);
-            void renderTextureImpl(TextureInfo info, Rect srcR, Rect dstR, 
+            void setRenderDrawColor();
+            void drawTextureImpl(TextureInfo info, Rect srcR, Rect dstR, 
                     double angle, Point ref, std::vector<Flip> flip);
 
             uint32_t toSDLFlag(Flags flag);

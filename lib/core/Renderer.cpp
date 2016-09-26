@@ -26,48 +26,129 @@ int unk::Renderer::getMaxTextureHeight() {
     return Info.max_texture_height;
 } 
 
-void unk::Renderer::renderTexture(TextureInfo info, Point dest) {
+void unk::Renderer::drawTexture(TextureInfo info, Point dest) {
     Rect srcR(0, 0, info.getWidth(), info.getHeight());
     Rect dstR(dest.X, dest.Y, info.getWidth(), info.getHeight());
-    renderTextureImpl(info, srcR, dstR, 0.0, Point(0, 0), { Flip::NONE });
+    drawTextureImpl(info, srcR, dstR, 0.0, Point(0, 0), { Flip::NONE });
 }
 
-void unk::Renderer::renderTexture(TextureInfo info, Point dest, double angle, Point ref) {
+void unk::Renderer::drawTexture(TextureInfo info, Point dest, double angle, Point ref) {
     Rect srcR(0, 0, info.getWidth(), info.getHeight());
     Rect dstR(dest.X, dest.Y, info.getWidth(), info.getHeight());
-    renderTextureImpl(info, srcR, dstR, angle, ref, { Flip::NONE });
+    drawTextureImpl(info, srcR, dstR, angle, ref, { Flip::NONE });
 }
 
-void unk::Renderer::renderTexture(TextureInfo info, Point dest, std::vector<Flip> flip) {
+void unk::Renderer::drawTexture(TextureInfo info, Point dest, std::vector<Flip> flip) {
     Rect srcR(0, 0, info.getWidth(), info.getHeight());
     Rect dstR(dest.X, dest.Y, info.getWidth(), info.getHeight());
-    renderTextureImpl(info, srcR, dstR, 0.0, Point(0, 0), flip);
+    drawTextureImpl(info, srcR, dstR, 0.0, Point(0, 0), flip);
 }
 
-void unk::Renderer::renderTexture(TextureInfo info, Point dest, double angle, Point ref,
+void unk::Renderer::drawTexture(TextureInfo info, Point dest, double angle, Point ref,
         std::vector<Flip> flip) {
     Rect srcR(0, 0, info.getWidth(), info.getHeight());
     Rect dstR(dest.X, dest.Y, info.getWidth(), info.getHeight());
-    renderTextureImpl(info, srcR, dstR, angle, ref, flip);
+    drawTextureImpl(info, srcR, dstR, angle, ref, flip);
 }
 
-void unk::Renderer::renderTexture(TextureInfo info, Rect srcR, Rect dstR) {
-    renderTextureImpl(info, srcR, dstR, 0.0, Point(0, 0), { Flip::NONE });
+void unk::Renderer::drawTexture(TextureInfo info, Rect srcR, Rect dstR) {
+    drawTextureImpl(info, srcR, dstR, 0.0, Point(0, 0), { Flip::NONE });
 }
 
-void unk::Renderer::renderTexture(TextureInfo info, Rect srcR, Rect dstR,
+void unk::Renderer::drawTexture(TextureInfo info, Rect srcR, Rect dstR,
         double angle, Point ref) {
-    renderTextureImpl(info, srcR, dstR, angle, ref, { Flip::NONE });
+    drawTextureImpl(info, srcR, dstR, angle, ref, { Flip::NONE });
 }
 
-void unk::Renderer::renderTexture(TextureInfo info, Rect srcR, Rect dstR,
+void unk::Renderer::drawTexture(TextureInfo info, Rect srcR, Rect dstR,
         std::vector<Flip> flip) {
-    renderTextureImpl(info, srcR, dstR, 0.0, Point(0, 0), flip);
+    drawTextureImpl(info, srcR, dstR, 0.0, Point(0, 0), flip);
 }
 
-void unk::Renderer::renderTexture(TextureInfo info, Rect srcR, Rect dstR,
+void unk::Renderer::drawTexture(TextureInfo info, Rect srcR, Rect dstR,
         double angle, Point ref, std::vector<Flip> flip) {
-    renderTextureImpl(info, srcR, dstR, angle, ref, flip);
+    drawTextureImpl(info, srcR, dstR, angle, ref, flip);
+}
+
+void unk::Renderer::setDrawColor(Color color) {
+    DrawColor = color;
+    setRenderDrawColor();
+}
+
+unk::Color unk::Renderer::getDrawColor() {
+    return DrawColor;
+}
+
+void unk::Renderer::drawPoints(std::vector<Point> points) {
+    if (points.empty())
+        return;
+
+    SDL_Point sdlPoints[points.size()];
+
+    int idx = 0;
+    for (auto point : points)
+        sdlPoints[idx++] = point.toSDLPoint();
+
+    int ret = SDL_RenderDrawPoints(SDLRenderer, sdlPoints, idx);
+
+    if (ret)
+        throw SDLException();
+}
+
+void unk::Renderer::drawLines(std::vector<Point> points) {
+    if (points.size() < 2)
+        return;
+
+    SDL_Point sdlPoints[points.size()];
+
+    int idx = 0;
+    for (auto point : points)
+        sdlPoints[idx++] = point.toSDLPoint();
+
+    int ret = SDL_RenderDrawLines(SDLRenderer, sdlPoints, idx);
+
+    if (ret)
+        throw SDLException();
+}
+
+void unk::Renderer::drawRects(std::vector<Rect> rects, 
+        bool fill, bool sameColor, Color color) {
+    if (rects.empty())
+        return;
+
+    SDL_Rect sdlRects[rects.size()];
+
+    int idx = 0;
+    for (auto rect : rects)
+        sdlRects[idx++] = rect.toSDLRect();
+
+    int ret = SDL_RenderDrawRects(SDLRenderer, sdlRects, idx);
+
+    if (ret)
+        throw SDLException();
+
+    if (fill) {
+        Color oldColor;
+        if (!sameColor) {
+            oldColor = DrawColor;
+            DrawColor = color;
+            setRenderDrawColor();
+        }
+
+        int ret = SDL_RenderFillRects(SDLRenderer, sdlRects, idx);
+
+        if (ret)
+            throw SDLException();
+
+        if (!sameColor) {
+            DrawColor = oldColor;
+            setRenderDrawColor();
+        }
+    }
+}
+
+void unk::Renderer::render() {
+    SDL_RenderPresent(SDLRenderer);
 }
 
 SDL_Texture *unk::Renderer::createTextureFromSurface(SDL_Surface *surface) {
@@ -88,7 +169,15 @@ void unk::Renderer::initRenderer(std::vector<Flags> flags) {
         throw SDLException();
 }
 
-void unk::Renderer::renderTextureImpl(TextureInfo info, Rect srcR, Rect dstR,
+void unk::Renderer::setRenderDrawColor() {
+    int ret = SDL_SetRenderDrawColor(SDLRenderer, DrawColor.R, DrawColor.G,
+            DrawColor.B, DrawColor.A);
+
+    if (ret)
+        throw SDLException();
+} 
+
+void unk::Renderer::drawTextureImpl(TextureInfo info, Rect srcR, Rect dstR,
         double angle, Point ref, std::vector<Flip> flip) {
     SDL_Texture *texture = nullptr;
 
@@ -103,7 +192,7 @@ void unk::Renderer::renderTextureImpl(TextureInfo info, Rect srcR, Rect dstR,
 
     int ret = SDL_RenderCopyEx(SDLRenderer, texture, &src, &dest, angle, &rotationRef, flipOpt);
 
-    if (ret < 0)
+    if (ret)
         throw SDLException();
 }
 
