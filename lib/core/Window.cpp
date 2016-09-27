@@ -3,7 +3,7 @@
 #include "unk/core/Window.h"
 
 unk::Window::Window(std::string title, int x, int y, int width, int height, 
-	std::vector<WindowFlags> flags) : Title(title), X(x), Y(y), Width(width), Height(height) {
+	std::vector<unk::Window::Flags> flags) : Title(title), X(x), Y(y), Width(width), Height(height) {
 	
 	unk::Window::initWindow(title, x, y, width, height, flags);
 }
@@ -24,7 +24,7 @@ unk::Window::~Window() {
 }
 
 void unk::Window::initWindow(std::string title, int x, int y, int width, int height, 
-	std::vector<WindowFlags> flags) {
+	std::vector<unk::Window::Flags> flags) {
 	
 	SDL_Window *sdlWindow;
 
@@ -39,14 +39,14 @@ SDL_Renderer* unk::Window::createRenderer(int index, uint32_t flags) {
 	return renderer;
 }
 
-uint32_t unk::Window::toSDLFlags(std::vector<WindowFlags> flags) {
+uint32_t unk::Window::toSDLFlags(std::vector<unk::Window::Flags> flags) {
 	uint32_t sdlFlags = 0;
 	for (auto flag : flags) {
-		if (flag == WindowFlags::OPENGL) 		  
+		if (flag == unk::Window::Flags::OPENGL) 		  
 			sdlFlags |= SDL_WINDOW_OPENGL;
-		else if (flag == WindowFlags::BORDERLESS) 
+		else if (flag == unk::Window::Flags::BORDERLESS) 
 			sdlFlags |= SDL_WINDOW_BORDERLESS;
-		else if (flag == WindowFlags::RESIZABLE)  
+		else if (flag == unk::Window::Flags::RESIZABLE)  
 			sdlFlags |= SDL_WINDOW_RESIZABLE;
 	}
 	return sdlFlags;
