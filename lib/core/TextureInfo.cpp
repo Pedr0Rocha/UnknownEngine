@@ -1,35 +1,17 @@
 /* Unknown Engine Project */
 
 #include "unk/core/TextureInfo.h"
-#include "unk/core/Resources.h"
 
-unk::TextureInfo::TextureInfo(std::string name) : Name(name) {
+unk::TextureInfo::TextureInfo(std::string filename) : Filename(filename) {
     Width = 0;
     Height = 0;
-
-    Resources::getResources().registerTexture(*this);
 }
 
-std::string unk::TextureInfo::getName() const {
-    return Name;
-}
-
-int unk::TextureInfo::getWidth() {
-    getMeasures();
-    return Width;
-}
-
-int unk::TextureInfo::getHeight() {
-    getMeasures();
-    return Height;
-}
-
-void unk::TextureInfo::getMeasures() {
-    if (!Width && !Height)
-        Resources::getResources().getTextureMeasures(*this, &Width, &Height);
+std::string unk::TextureInfo::getFilename() const {
+    return Filename;
 }
 
 bool std::less<unk::TextureInfo>::operator()(const unk::TextureInfo &one, 
         const unk::TextureInfo &two) const {
-    return one.getName() < two.getName();
+    return one.getFilename() < two.getFilename();
 }

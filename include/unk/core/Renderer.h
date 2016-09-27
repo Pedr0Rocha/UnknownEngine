@@ -3,12 +3,14 @@
 #ifndef UNK_RENDERER_H
 #define UNK_RENDERER_H
 
+#include "unk/core/Resources.h"
 #include "unk/core/TextureInfo.h"
 #include "unk/utils/Point.h"
 #include "unk/utils/Rect.h"
 #include "unk/utils/Color.h"
 
 #include <vector>
+#include <memory>
 
 class SDL_Renderer;
 
@@ -25,6 +27,8 @@ namespace unk {
             SDL_Renderer *SDLRenderer;
             SDL_RendererInfo Info;
             Color DrawColor;
+
+            std::shared_ptr<unk::Resources> Res;
 
         public:
             /**
@@ -49,9 +53,9 @@ namespace unk {
 
             /// @brief Creates a @c Renderer with a @c Window and standard 
             /// flags (ACCELERATED).
-            Renderer();
+            Renderer(std::shared_ptr<Resources> res);
             /// @brief Creates a customized @c Renderer with custom flags.
-            Renderer(std::vector<Flags> flags);
+            Renderer(std::shared_ptr<Resources> res, std::vector<Flags> flags);
 
             ~Renderer();
 

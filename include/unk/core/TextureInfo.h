@@ -14,39 +14,15 @@ namespace unk {
      */
     class TextureInfo {
         private:
-            std::string Name;
+            std::string Filename;
+
+        public:
             int Width;
             int Height;
 
-        public:
-            /// @brief As soon as it is instantiated, it tries to register the texture
-            /// by calling the @c Resources class function.
-            TextureInfo(std::string name);
+            TextureInfo(std::string filename);
 
-            std::string getName() const;
-
-            /**
-             * @brief Gets the @c width of the texture. 
-             *
-             * @details By the time this class is instantiated, both @c Width and @c Height
-             * are initialized with zero. However, after the call of the loading operation
-             * when this function is called, it retrieves both the dimension by calling the
-             * function @c getMeasures from @c Resources class.
-             */
-            int getWidth();
-
-            /**
-             * @brief Gets the @c width of the texture. 
-             *
-             * @details By the time this class is instantiated, both @c Width and @c Height
-             * are initialized with zero. However, after the call of the loading operation
-             * when this function is called, it retrieves both the dimension by calling the
-             * function @c getMeasures from @c Resources class.
-             */
-            int getHeight();
-
-        private:
-            void getMeasures();
+            std::string getFilename() const;
 
     };
 }

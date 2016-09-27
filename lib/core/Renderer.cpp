@@ -3,14 +3,13 @@
 #include "SDL2/SDL.h"
 
 #include "unk/core/Renderer.h"
-#include "unk/core/Resources.h"
 #include "unk/utils/SDLException.h"
 
-unk::Renderer::Renderer() {
+unk::Renderer::Renderer(std::shared_ptr<Resources> res) : Res(res) {
     initRenderer({ Flags::ACCELERATED });
 }
 
-unk::Renderer::Renderer(std::vector<Flags> flags) {
+unk::Renderer::Renderer(std::shared_ptr<Resources> res, std::vector<Flags> flags) : Res(res) {
     initRenderer(flags);
 }
 
@@ -27,27 +26,27 @@ int unk::Renderer::getMaxTextureHeight() {
 } 
 
 void unk::Renderer::drawTexture(TextureInfo info, Point dest) {
-    Rect srcR(0, 0, info.getWidth(), info.getHeight());
-    Rect dstR(dest.X, dest.Y, info.getWidth(), info.getHeight());
+    Rect srcR(0, 0, info.Width, info.Height);
+    Rect dstR(dest.X, dest.Y, info.Width, info.Height);
     drawTextureImpl(info, srcR, dstR, 0.0, Point(0, 0), { Flip::NONE });
 }
 
 void unk::Renderer::drawTexture(TextureInfo info, Point dest, double angle, Point ref) {
-    Rect srcR(0, 0, info.getWidth(), info.getHeight());
-    Rect dstR(dest.X, dest.Y, info.getWidth(), info.getHeight());
+    Rect srcR(0, 0, info.Width, info.Height);
+    Rect dstR(dest.X, dest.Y, info.Width, info.Height);
     drawTextureImpl(info, srcR, dstR, angle, ref, { Flip::NONE });
 }
 
 void unk::Renderer::drawTexture(TextureInfo info, Point dest, std::vector<Flip> flip) {
-    Rect srcR(0, 0, info.getWidth(), info.getHeight());
-    Rect dstR(dest.X, dest.Y, info.getWidth(), info.getHeight());
+    Rect srcR(0, 0, info.Width, info.Height);
+    Rect dstR(dest.X, dest.Y, info.Width, info.Height);
     drawTextureImpl(info, srcR, dstR, 0.0, Point(0, 0), flip);
 }
 
 void unk::Renderer::drawTexture(TextureInfo info, Point dest, double angle, Point ref,
         std::vector<Flip> flip) {
-    Rect srcR(0, 0, info.getWidth(), info.getHeight());
-    Rect dstR(dest.X, dest.Y, info.getWidth(), info.getHeight());
+    Rect srcR(0, 0, info.Width, info.Height);
+    Rect dstR(dest.X, dest.Y, info.Width, info.Height);
     drawTextureImpl(info, srcR, dstR, angle, ref, flip);
 }
 
@@ -181,9 +180,8 @@ void unk::Renderer::drawTextureImpl(TextureInfo info, Rect srcR, Rect dstR,
         double angle, Point ref, std::vector<Flip> flip) {
     SDL_Texture *texture = nullptr;
 
-    texture = Resources::getResources().getTexture(info);
-    if (!texture)
-        throw SDLException();
+    // Assert that the texture is loaded.
+    texture = Res->getTexture(info);
 
     SDL_Rect src = srcR.toSDLRect();
     SDL_Rect dest = dstR.toSDLRect();
