@@ -47,11 +47,6 @@ namespace unk {
 			Window(std::string title, int width, int height);
 
 			~Window();
-			
-			/// @brief Resposible for initializing and creating the @c SDL_Window
-			/// from the @c Window constructor.
-			void initWindow(std::string title, int x, int y, int width, int height, 
-				std::vector<Flags> flags);
 
 			/// @brief Creates a @c Renderer from a @c Window.
 			SDL_Renderer* createRenderer(int index, uint32_t flags);
@@ -70,6 +65,11 @@ namespace unk {
 			void restoreWindow();
 
 		private:
+			/// @brief Resposible for initializing and creating the @c SDL_Window
+			/// from the @c Window constructor.
+			void initWindow(std::string title, int x, int y, int width, int height, 
+				std::vector<Flags> flags);
+			
 			/// @brief Converts @c Window Flags to @c SDL_WindowFlags
 			uint32_t toSDLFlags(std::vector<Flags> flags);
 	};
