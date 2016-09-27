@@ -2,6 +2,8 @@
 
 #include "unk/core/Window.h"
 
+#include "unk/utils/SDLException.h"
+
 unk::Window::Window(std::string title, int x, int y, int width, int height, 
     std::vector<Flags> flags) : Title(title), X(x), Y(y), Width(width), Height(height) {
     

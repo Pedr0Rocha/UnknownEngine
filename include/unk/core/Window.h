@@ -9,8 +9,7 @@
 #include <vector>
 
 namespace unk {
-
-    
+  
     /**
     * @brief Wraps the SDL equivalent (@c SDL_Window).
     *
@@ -19,12 +18,12 @@ namespace unk {
     */
     class Window {
         
-    public:
+        public:
 
             /**
-             * @brief The @c SDL_WindowFlags.
+            * @brief The @c SDL_WindowFlags.
             */
-             enum class Flags { 
+            enum class Flags { 
                 OPENGL,         ///< Window usable with OpenGL context.
                 BORDERLESS,     ///< No window decoration.
                 RESIZABLE       ///< Window can be resized.
@@ -36,7 +35,6 @@ namespace unk {
             int Width;
             int Height;
             SDL_Window* SDLWindow;
-
 
             /// @brief Creates a fully customized @c Window.
             Window(std::string title, int x, int y, int width, int height, std::vector<Flags> flags);
@@ -73,8 +71,8 @@ namespace unk {
             /// @brief Converts @c Window Flags to @c SDL_WindowFlags
             uint32_t toSDLFlags(std::vector<Flags> flags);
             /// @brief Converts a single @c Window Flag to its correspondent @c SDL_WindowFlag
-            uint32_t unk::Window::toSDLFlag(Flags flag);
-        };
-    }
+            uint32_t toSDLFlag(Flags flag);
+    };
+}
 
 #endif
