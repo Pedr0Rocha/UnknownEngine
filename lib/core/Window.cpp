@@ -3,7 +3,7 @@
 #include "unk/core/Window.h"
 
 unk::Window::Window(std::string title, int x, int y, int width, int height, 
-	std::vector<unk::Window::Flags> flags) : Title(title), X(x), Y(y), Width(width), Height(height) {
+	std::vector<Flags> flags) : Title(title), X(x), Y(y), Width(width), Height(height) {
 	
 	unk::Window::initWindow(title, x, y, width, height, flags);
 }
@@ -24,40 +24,63 @@ unk::Window::~Window() {
 }
 
 void unk::Window::initWindow(std::string title, int x, int y, int width, int height, 
-	std::vector<unk::Window::Flags> flags) {
+	std::vector<Flags> flags) {
 	
 	SDL_Window *sdlWindow;
 
 	uint32_t sdlFlags = unk::Window::toSDLFlags(flags);
 	
 	sdlWindow = SDL_CreateWindow(title.c_str(), x, y, width, height, sdlFlags);
+
+	if (sdlWindow == nullptr) 
+		throw SDLException();
+	
 	SDLWindow = sdlWindow;
 }
 
 SDL_Renderer* unk::Window::createRenderer(int index, uint32_t flags) {
 	SDL_Renderer *renderer = SDL_CreateRenderer(SDLWindow, index, flags);
+
+	if (renderer == nullptr)
+		throw SDLException();
+
 	return renderer;
 }
 
-uint32_t unk::Window::toSDLFlags(std::vector<unk::Window::Flags> flags) {
+uint32_t unk::Window::toSDLFlag(Flags flag) {
+    switch (flag) {
+        case Flags::OPENGL:
+            return SDL_WINDOW_OPENGL;
+        case Flags::BORDERLESS:
+            return SDL_WINDOW_BORDERLESS;
+        case Flags::RESIZABLE:
+            return SDL_WINDOW_RESIZABLE;
+        default:
+            throw SDLException("Invalid Window Flag.");
+    }
+}
+
+uint32_t unk::Window::toSDLFlags(std::vector<Flags> flags) {
 	uint32_t sdlFlags = 0;
-	for (auto flag : flags) {
-		if (flag == unk::Window::Flags::OPENGL) 		  
-			sdlFlags |= SDL_WINDOW_OPENGL;
-		else if (flag == unk::Window::Flags::BORDERLESS) 
-			sdlFlags |= SDL_WINDOW_BORDERLESS;
-		else if (flag == unk::Window::Flags::RESIZABLE)  
-			sdlFlags |= SDL_WINDOW_RESIZABLE;
-	}
+	
+	for (auto flag : flags) 
+		sdlFlags |= toSDLFlag(flag);
+
 	return sdlFlags;
 }
 
 void unk::Window::setWindowFullscreen() {
-	SDL_SetWindowFullscreen(SDLWindow, SDL_WINDOW_FULLSCREEN);
+	int ret = SDL_SetWindowFullscreen(SDLWindow, SDL_WINDOW_FULLSCREEN);
+
+	if (ret < 0)
+		throw SDLException();
 }
 
 void unk::Window::setWindowFakeFullscreen() {
-	SDL_SetWindowFullscreen(SDLWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
+	int ret = SDL_SetWindowFullscreen(SDLWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
+
+	if (ret < 0)
+		throw SDLException();
 }
 
 void unk::Window::minimizeWindow() {

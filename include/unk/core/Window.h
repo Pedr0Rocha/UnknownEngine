@@ -11,23 +11,23 @@
 namespace unk {
 
    
-    /**
-     * @brief Wraps the SDL equivalent (@c SDL_Window).
-     *
-     * @details Is responsible for every function implemented
-     * with the @c SDL_Window.
-     */
+	/**
+	* @brief Wraps the SDL equivalent (@c SDL_Window).
+	*
+	* @details Is responsible for every function implemented
+	* with the @c SDL_Window.
+	*/
 	class Window {
 		
 		public:
 
-            /**
-             * @brief The @c SDL_WindowFlags.
-             */
+			/**
+			 * @brief The @c SDL_WindowFlags.
+			*/
 			enum class Flags { 
-				OPENGL,         ///< Window usable with OpenGL context.
-				BORDERLESS,     ///< No window decoration.
-				RESIZABLE       ///< Window can be resized.
+				OPENGL,			///< Window usable with OpenGL context.
+				BORDERLESS,		///< No window decoration.
+				RESIZABLE		///< Window can be resized.
 			};
 
 			std::string Title;
@@ -38,12 +38,12 @@ namespace unk {
 			SDL_Window* SDLWindow;
 
 
-            /// @brief Creates a fully customized @c Window.
+			/// @brief Creates a fully customized @c Window.
 			Window(std::string title, int x, int y, int width, int height, std::vector<Flags> flags);
-            /// @brief Creates a standard @c Window.
+			/// @brief Creates a standard @c Window.
 			Window(std::string title);
-            /// @brief Creates a customized @c Window with width and height set
-            /// and standard flags.	 
+			/// @brief Creates a customized @c Window with width and height set
+			/// and standard flags.	 
 			Window(std::string title, int width, int height);
 
 			~Window();
@@ -72,6 +72,8 @@ namespace unk {
 			
 			/// @brief Converts @c Window Flags to @c SDL_WindowFlags
 			uint32_t toSDLFlags(std::vector<Flags> flags);
+			/// @brief Converts a single @c Window Flag to its correspondent @c SDL_WindowFlag
+			uint32_t unk::Window::toSDLFlag(Flags flag);
 	};
 }
 
