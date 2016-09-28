@@ -29,6 +29,8 @@ namespace unk {
             /// @brief Constructs the object with a custom error message.
             SDLException(std::string message);
 
+            ~SDLException() throw();
+
             /// @brief Returns the exception message given.
             virtual const char *what() const throw();
     };
