@@ -1,2 +1,3 @@
 add_library (UNKCore
-    Window.cpp)
+    Window.cpp
+    Renderer.cpp)
