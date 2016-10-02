@@ -3,6 +3,9 @@
 #include "unk/core/Window.h"
 #include "unk/utils/UnkExceptions.h"
 
+unk::Window::Window(Kind kind) : K(kind) {
+}
+
 unk::Window::~Window() {
 }
 
@@ -91,4 +94,8 @@ double unk::Window::getOpacity() {
 double unk::Window::getBrightness() {
     throw FunctionNotImplementedException("getBrightness");
     return 0.0;
+}
+
+unk::Window::Kind unk::Window::getKind() const {
+    return K;
 }

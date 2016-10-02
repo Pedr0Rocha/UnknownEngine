@@ -24,8 +24,18 @@ namespace unk {
      */
     class Renderer {
         public:
-            Renderer() = delete;
+            /**
+             * @brief Enum with all kinds of @em Renderer available.
+             */
+            enum class Kind {
+            };
 
+        protected:
+            Kind K;
+
+            Renderer(Kind kind);
+
+        public:
             virtual ~Renderer();
 
             /// @brief Gets the maximum width of a texture.
@@ -66,6 +76,9 @@ namespace unk {
 
             /// @brief Actually renders the intern buffer into the Window.
             void render();
+
+            /// @brief Gets the @c Renderer kind. Is called by isInstanceOf.
+            Kind getKind() const;
             
     };
 }
