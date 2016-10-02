@@ -24,8 +24,18 @@ namespace unk {
      */
     class Window {
         public:
-            Window() = delete;
+            /**
+             * @brief Enum with all kinds of @c Window available.
+             */
+            enum class Kind {
+            };
 
+        protected:
+            Kind K;
+
+            Window(Kind kind);
+
+        public:
             virtual ~Window();
 
             /// @brief Maximizes the window.
@@ -74,6 +84,8 @@ namespace unk {
             virtual double getOpacity();
             /// @brief Returns the @c brightness of the window.
             virtual double getBrightness();
+
+            Kind getKind() const;
 
     };
 }

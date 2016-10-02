@@ -5,6 +5,8 @@
 
 #include "unk/core/TextureInfo.h"
 
+#include <map>
+
 namespace unk {
 
     /**
@@ -12,7 +14,23 @@ namespace unk {
      */
     class Resources {
         public:
+            /**
+             * @brief Enum with all kinds of @c Resources available.
+             */
+            enum class Kind {
+            };
+
+        protected:
+            Kind K;
+
+            Resources(Kind kind);
+
+        public:
             virtual ~Resources();
+
+            /// @brief Returns the @c Kind of the resource. Is called by
+            /// the function @p isInstanceOf.
+            Kind getKind() const;
     };
 
     /**

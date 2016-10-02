@@ -3,6 +3,9 @@
 #include "unk/core/Renderer.h"
 #include "unk/utils/UnkExceptions.h"
 
+unk::Renderer::Renderer(Kind kind) : K(kind) {
+}
+
 unk::Renderer::~Renderer() {
 }
 
@@ -47,4 +50,8 @@ void unk::Renderer::drawRects(std::vector<Rect> rects, bool fill, bool sameColor
 
 void unk::Renderer::render() {
     throw FunctionNotImplementedException("render");
+}
+
+unk::Renderer::Kind unk::Renderer::getKind() const {
+    return K;
 }
