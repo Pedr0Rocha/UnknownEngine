@@ -4,43 +4,20 @@
 
 #include "unk/SDLInit.h"
 
-
-uint32_t unk::toSDLFlag(SDLInitFlags flag) {
-    switch (flag) {
-        case Flags::TIMER:
-            return SDL_INIT_TIMER;
-        case Flags::AUDIO:
-            return SDL_INIT_AUDIO;
-        case Flags::VIDEO:
-            return SDL_INIT_VIDEO;
-        case Flags::JOYSTICK:
-            return SDL_INIT_JOYSTICK;
-        case Flags::HAPTIC:
-            return SDL_INIT_HAPTIC;
-        case Flags::GAMECONTROLLER:
-            return SDL_INIT_GAMECONTROLLER;
-        case Flags::EVENTS:
-            return SDL_INIT_EVENTS;
-        case Flags::EVERYTHING:
-            return SDL_INIT_EVERYTHING;
-        case Flags::NOPARACHUTE:
-            return SDL_INIT_NOPARACHUTE;
-        default:
-            throw SDLException("Invalid SDL Init Flag.");
-    }
-}
-
-uint32_t unk::toSDLFlags(std::vector<SDLInitFlags> flags) {
-    uint32_t sdlFlags = 0;
-
-    for (auto flag : flags) 
-        sdlFlags |= toSDLFlag(flag);
-
-    return sdlFlags;
-}
+static SDLFlagConverter<SDLInitFlags> flagConverter = { 
+	{ SDLInitFlags::TIMER, SDL_INIT_TIMER },
+	{ SDLInitFlags::AUDIO, SDL_INIT_AUDIO },
+	{ SDLInitFlags::VIDEO, SDL_INIT_VIDEO },
+	{ SDLInitFlags::JOYSTICK, SDL_INIT_JOYSTICK },
+	{ SDLInitFlags::HAPTIC, SDL_INIT_HAPTIC },
+	{ SDLInitFlags::GAMECONTROLLER, SDL_INIT_GAMECONTROLLER },
+	{ SDLInitFlags::EVENTS, SDL_INIT_EVENTS },
+	{ SDLInitFlags::EVERYTHING, SDL_INIT_EVERYTHING },
+	{ SDLInitFlags::NOPARACHUTE, SDL_INIT_NOPARACHUTE },
+};
 
 void unk::InitializeSDL(std::vector<SDLInitFlags> flags) {
-	uint32_t sdlFlags = unk::toSDLFlags(flags);
+	uint32_t sdlFlags = flagConverter.toSDLFlags(flags);
 	int ret = SDL_Init(sdlFlags);
 
 	if (ret)
