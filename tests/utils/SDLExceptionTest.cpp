@@ -1,4 +1,7 @@
 #include "gtest/gtest.h"
+
+#include "SDL2/SDL_image.h"
+
 #include "unk/utils/SDLException.h"
 
 #include <iostream>
@@ -26,6 +29,22 @@ TEST(UtilsTest, RendererError) {
     try {
         renderer = SDL_CreateRenderer(window, 0, SDL_RENDERER_ACCELERATED);
         if (renderer == nullptr)
+            throw unk::SDLException();
+    } catch (unk::SDLException &e) {
+        std::cerr << e.what() << std::endl;
+        throughCatch = true;
+    }
+
+    ASSERT_TRUE(throughCatch);
+}
+
+TEST(UtilsTest, ImageError) {
+    bool throughCatch = false;
+    SDL_Surface *surface = nullptr;
+
+    try {
+        surface = IMG_Load("SomeNonExistingImage.png");
+        if (!surface)
             throw unk::SDLException();
     } catch (unk::SDLException &e) {
         std::cerr << e.what() << std::endl;

@@ -1,0 +1,49 @@
+language:
+    cpp
+
+os:
+    linux
+
+sudo:
+    false
+
+addons:
+    apt:
+        packages:
+            - g++-5
+            - gcc-5
+
+        sources:
+            - ubuntu-toolchain-r-test
+
+cache:
+    directories:
+        - $HOME/precompiled
+
+before_install:
+    - export CC=gcc-5
+    - export CXX=g++-5
+
+    - export CF_SDL2=$HOME/precompiled/sdl2
+    - export CF_SDL2_IMAGE=$HOME/precompiled/sdl2_image
+    - export CF_GOOGLETEST=$HOME/precompiled/googletest
+
+    - export LFLAGS=`echo '-L'{$CF_SDL2,$CF_SDL2_IMAGE,$CF_GOOGLETEST}/lib`
+    - export IFLAGS=`echo '-I'{$CF_SDL2,$CF_SDL2_IMAGE,$CF_GOOGLETEST}/include
+      '-I'{$CF_SDL2,$CF_SDL2_IMAGE}/include/SDL2`
+
+    - export LD_LIBRARY_PATH="$CF_SDL2/lib:$CF_SDL2_IMAGE/lib"
+
+install:
+    - bash scripts/install.sh
+
+script:
+    - mkdir build && cd build
+    - cmake -Dtest=ON -DCMAKE_CXX_FLAGS="${IFLAGS} ${LFLAGS}" ../
+    - make -j2 && ctest -V
+
+notifications:
+    email:
+        on_success: never
+        on_failure: never
+    
