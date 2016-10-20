@@ -12,6 +12,9 @@ unk::SDLException::SDLException(std::string message) {
     this->message = prefixMessage + message;
 }
 
+unk::SDLException::~SDLException() throw() {
+}
+
 const char *unk::SDLException::what() const throw() {
     return message.c_str();
 }

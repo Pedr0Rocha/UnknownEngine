@@ -1,4 +1,5 @@
 add_library (UNKCore
-  TextureInfo.cpp
-  Resources.cpp
-  Renderer.cpp)
+    Window.cpp
+    TextureInfo.cpp
+    Resources.cpp
+    Renderer.cpp)

@@ -3,130 +3,83 @@
 #ifndef UNK_RENDERER_H
 #define UNK_RENDERER_H
 
-#include "unk/core/Resources.h"
 #include "unk/core/TextureInfo.h"
+#include "unk/core/RenderOptions.h"
+#include "unk/utils/Color.h"
 #include "unk/utils/Point.h"
 #include "unk/utils/Rect.h"
-#include "unk/utils/Color.h"
 
 #include <vector>
-#include <memory>
-
-class SDL_Renderer;
 
 namespace unk {
 
     /**
-     * @brief Wraps the SDL equivalent (@c SDL_Renderer).
+     * @brief Abstract renderer class that declares all the basic 
+     * functions of a renderer.
      *
-     * @details Is responsible for every function implemented
-     * with the @c SDL_Renderer.
+     * @details This class should be the base class of every implemented
+     * renderer. The child class may choose not to implement every
+     * function declared here (as they are already implemented). Their
+     * default behaviour is throwing a FunctionNotImplementedException.
      */
     class Renderer {
-        private:
-            SDL_Renderer *SDLRenderer;
-            SDL_RendererInfo Info;
-            Color DrawColor;
-
-            std::shared_ptr<unk::Resources> Res;
-
         public:
             /**
-             * @brief The @c SDL_RendererFlags.
+             * @brief Enum with all kinds of @em Renderer available.
              */
-            enum class Flags {
-                SOFTWARE,       ///< Software fallback.
-                ACCELERATED,    ///< Uses hardware acceleration.
-                VSYNC,          ///< Synchronizes the refresh rate.
-                TEXTURE         ///< Render to texture.
+            enum class Kind {
             };
 
-            /**
-             * @brief Indicates whether the @c Renderer should flip the
-             * image or not.
-             */
-            enum class Flip {
-                NONE,       ///< No flip.
-                HORIZONTAL, ///< Flip horizontally.
-                VERTICAL    ///< Flip vertically.
-            };
+        protected:
+            Kind K;
 
-            /// @brief Creates a @c Renderer with a @c Window and standard 
-            /// flags (ACCELERATED).
-            Renderer(std::shared_ptr<Resources> res);
-            /// @brief Creates a customized @c Renderer with custom flags.
-            Renderer(std::shared_ptr<Resources> res, std::vector<Flags> flags);
+            Renderer(Kind kind);
 
-            ~Renderer();
+        public:
+            virtual ~Renderer();
 
-            /// @brief Gets the maximum texture width.
-            int getMaxTextureWidth();
-            /// @brief Gets the maximum texture height.
-            int getMaxTextureHeight();
+            /// @brief Gets the maximum width of a texture.
+            uint32_t getMaxTextureWidth();
+            /// @brief Gets the maximum height of a texture.
+            uint32_t getMaxTextureHeight();
 
             /// @brief Clears the current rendering target.
             void clear();
 
-            /// @brief Draws the texture at the point @p dest.
-            void drawTexture(TextureInfo info, Point dest);
-            /// @brief Draws the texture at the point @p dest rotated by
-            /// @p angle degrees.
-            void drawTexture(TextureInfo info, Point dest, double angle,
-                    Point ref);
-            /// @brief Draws the texture at the point @p dest flipped as
-            /// specified in the vector @p flip.
-            void drawTexture(TextureInfo info, Point dest,
-                    std::vector<Flip> flip);
-            /// @brief Draws the texture at the point @p dest rotated by
-            /// @p angle degrees and flipped as specified in @p flip.
-            void drawTexture(TextureInfo info, Point dest, double angle,
-                    Point ref, std::vector<Flip> flip);
-
-            /// @brief Draws the texture inside the rectangle @p srcR
-            /// into @p dstR.
-            void drawTexture(TextureInfo info, Rect srcR, Rect dstR);
-            /// @brief Draws the texture inside the rectangle @p srcR
-            /// into @p dstR rotated by @p angle degrees.
-            void drawTexture(TextureInfo info, Rect srcR, Rect dstR,
-                    double angle, Point ref);
-            /// @brief Draws the texture inside the rectangle @p srcR
-            /// into @p dstR flipped as specified in @p flip.
-            void drawTexture(TextureInfo info, Rect srcR, Rect dstR,
-                    std::vector<Flip> flip);
-            /// @brief Draws the texture inside the rectangle @p srcR
-            /// into @p dstR rotated by @p angle degrees and flipped as
-            /// specified in @p flip.
-            void drawTexture(TextureInfo info, Rect srcR, Rect dstR,
-                    double angle, Point ref, std::vector<Flip> flip);
-
+            /// @brief Draws a texture whose info is @p info, with @p opt options.
+            void drawTexture(TextureInfo info, RenderOptions opt = RenderOptions());
             /// @brief Sets the drawing color.
             void setDrawColor(Color color);
-            /// @brief Returns the drawing color.
+            /// @brief Gets the drawing color.
             Color getDrawColor();
 
             /// @brief Draw the @p Point objects specified.
             void drawPoints(std::vector<Point> points);
             /// @brief Draw the lines specified by each two @p Point objects.
             void drawLines(std::vector<Point> points);
-            /// @brief Draw the @p Rect objects specified.
+
+            /** 
+             * @brief Draw the @p Rect objects specified.
+             *
+             * @details if @p fill is set, it will fill the rectangles
+             * with the same color.
+             *
+             * @p sameColor and @p color will only be taken into account
+             * if @p fill is set to @c true. 
+             *
+             * @p sameColor specifies wheather the filling color will 
+             * be the same as the drawing color. If @p false, @p color
+             * specifies de color.
+             */
             void drawRects(std::vector<Rect> rects, bool fill = false,
-                    bool sameColor = true, Color color = { 0, 0, 0, 0 });
+                    bool sameColor = true, Color color = Color());
 
             /// @brief Actually renders the intern buffer into the Window.
             void render();
 
-            /// @brief Creates a texture from a surface.
-            SDL_Texture *createTextureFromSurface(SDL_Surface *surface);
-
-        private:
-            void initRenderer(std::vector<Flags> flags);
-            void setRenderDrawColor();
-            void drawTextureImpl(TextureInfo info, Rect srcR, Rect dstR, 
-                    double angle, Point ref, std::vector<Flip> flip);
-
-            uint32_t toSDLFlag(Flags flag);
-            uint32_t toSDLFlags(std::vector<Flags> flags);
-            uint32_t toSDLRendererFlip(std::vector<Flip> flip);
+            /// @brief Gets the @c Renderer kind. Is called by isInstanceOf.
+            Kind getKind() const;
+            
     };
 }
 

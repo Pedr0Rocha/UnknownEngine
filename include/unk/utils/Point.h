@@ -19,6 +19,7 @@ namespace unk {
 
             SDL_Point toSDLPoint();
 	};
+
 }
 
 #endif
