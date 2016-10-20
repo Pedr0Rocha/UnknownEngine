@@ -86,7 +86,6 @@ namespace unk {
             virtual double getBrightness();
 
             Kind getKind() const;
-
     };
 }
 

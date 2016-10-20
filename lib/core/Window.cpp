@@ -1,6 +1,7 @@
 /* Unknown Engine Project */
 
 #include "unk/core/Window.h"
+
 #include "unk/utils/UnkExceptions.h"
 
 unk::Window::Window(Kind kind) : K(kind) {
