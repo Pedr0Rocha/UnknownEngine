@@ -28,6 +28,29 @@ namespace unk {
             /// @brief Returns the exception message given.
             virtual const char *what() const throw();
     };
+
+
+    extern std::string KeyNotFoundExceptionMessage;
+
+    /**
+     * @brief Exception raised if the key is not found.
+     */
+    class KeyNotFoundException : public std::exception {
+        private:
+            std::string key;
+
+        public:
+            /// @brief Constructs the object without the key name.
+            KeyNotFoundException();
+            /// @brief Constructs the object with the key name in the error message.
+            KeyNotFoundException(std::string key);
+
+            ~KeyNotFoundException() throw();
+
+            /// @brief Returns the exception message given.
+            virtual const char *what() const throw();
+    };
+
 }
 
 #endif
