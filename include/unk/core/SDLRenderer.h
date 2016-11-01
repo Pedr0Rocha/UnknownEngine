@@ -1,9 +1,9 @@
 /* Unknown Engine Project */
 
-#ifndef UNK_RENDERER_H
-#define UNK_RENDERER_H
+#ifndef UNK_SDL_RENDERER_H
+#define UNK_SDL_RENDERER_H
 
-#include "unk/core/Resources.h"
+#include "unk/core/SDLResources.h"
 #include "unk/core/TextureInfo.h"
 #include "unk/utils/Point.h"
 #include "unk/utils/Rect.h"
@@ -22,13 +22,13 @@ namespace unk {
      * @details Is responsible for every function implemented
      * with the @c SDL_Renderer.
      */
-    class Renderer {
+    class SDLRenderer : public Renderer {
         private:
-            SDL_Renderer *SDLRenderer;
+            SDL_Renderer *SDLr;
             SDL_RendererInfo Info;
             Color DrawColor;
 
-            std::shared_ptr<unk::Resources> Res;
+            std::shared_ptr<unk::SDLResources> Res;
 
         public:
             /**
@@ -41,92 +41,38 @@ namespace unk {
                 TEXTURE         ///< Render to texture.
             };
 
-            /**
-             * @brief Indicates whether the @c Renderer should flip the
-             * image or not.
-             */
-            enum class Flip {
-                NONE,       ///< No flip.
-                HORIZONTAL, ///< Flip horizontally.
-                VERTICAL    ///< Flip vertically.
-            };
-
             /// @brief Creates a @c Renderer with a @c Window and standard 
             /// flags (ACCELERATED).
-            Renderer(std::shared_ptr<Resources> res);
+            SDLRenderer(std::shared_ptr<SDLResources> res);
             /// @brief Creates a customized @c Renderer with custom flags.
-            Renderer(std::shared_ptr<Resources> res, std::vector<Flags> flags);
+            SDLRenderer(std::shared_ptr<SDLResources> res, std::vector<Flags> flags);
 
-            ~Renderer();
+            ~SDLRenderer();
 
-            /// @brief Gets the maximum texture width.
-            int getMaxTextureWidth();
-            /// @brief Gets the maximum texture height.
-            int getMaxTextureHeight();
+            uint32_t getMaxTextureWidth() override;
+            uint32_t getMaxTextureHeight() override;
 
-            /// @brief Clears the current rendering target.
-            void clear();
+            void clear() override;
 
-            /// @brief Draws the texture at the point @p dest.
-            void drawTexture(TextureInfo info, Point dest);
-            /// @brief Draws the texture at the point @p dest rotated by
-            /// @p angle degrees.
-            void drawTexture(TextureInfo info, Point dest, double angle,
-                    Point ref);
-            /// @brief Draws the texture at the point @p dest flipped as
-            /// specified in the vector @p flip.
-            void drawTexture(TextureInfo info, Point dest,
-                    std::vector<Flip> flip);
-            /// @brief Draws the texture at the point @p dest rotated by
-            /// @p angle degrees and flipped as specified in @p flip.
-            void drawTexture(TextureInfo info, Point dest, double angle,
-                    Point ref, std::vector<Flip> flip);
+            void drawTexture(TextureInfo info, RenderOptions opt = RenderOptions()) override;
 
-            /// @brief Draws the texture inside the rectangle @p srcR
-            /// into @p dstR.
-            void drawTexture(TextureInfo info, Rect srcR, Rect dstR);
-            /// @brief Draws the texture inside the rectangle @p srcR
-            /// into @p dstR rotated by @p angle degrees.
-            void drawTexture(TextureInfo info, Rect srcR, Rect dstR,
-                    double angle, Point ref);
-            /// @brief Draws the texture inside the rectangle @p srcR
-            /// into @p dstR flipped as specified in @p flip.
-            void drawTexture(TextureInfo info, Rect srcR, Rect dstR,
-                    std::vector<Flip> flip);
-            /// @brief Draws the texture inside the rectangle @p srcR
-            /// into @p dstR rotated by @p angle degrees and flipped as
-            /// specified in @p flip.
-            void drawTexture(TextureInfo info, Rect srcR, Rect dstR,
-                    double angle, Point ref, std::vector<Flip> flip);
+            void setDrawColor(Color color) override;
+            Color getDrawColor() override;
 
-            /// @brief Sets the drawing color.
-            void setDrawColor(Color color);
-            /// @brief Returns the drawing color.
-            Color getDrawColor();
-
-            /// @brief Draw the @p Point objects specified.
-            void drawPoints(std::vector<Point> points);
-            /// @brief Draw the lines specified by each two @p Point objects.
-            void drawLines(std::vector<Point> points);
-            /// @brief Draw the @p Rect objects specified.
+            void drawPoints(std::vector<Point> points) override;
+            void drawLines(std::vector<Point> points) override;
             void drawRects(std::vector<Rect> rects, bool fill = false,
-                    bool sameColor = true, Color color = { 0, 0, 0, 0 });
+                    bool sameColor = true, Color color = { 0, 0, 0, 0 }) override;
 
-            /// @brief Actually renders the intern buffer into the Window.
-            void render();
+            void render() override;
 
             /// @brief Creates a texture from a surface.
             SDL_Texture *createTextureFromSurface(SDL_Surface *surface);
 
         private:
-            void initRenderer(std::vector<Flags> flags);
-            void setRenderDrawColor();
-            void drawTextureImpl(TextureInfo info, Rect srcR, Rect dstR, 
-                    double angle, Point ref, std::vector<Flip> flip);
+            void initSDLRenderer(std::vector<Flags> flags);
+            void setRenderDrawColor(Color color);
 
-            uint32_t toSDLFlag(Flags flag);
-            uint32_t toSDLFlags(std::vector<Flags> flags);
-            uint32_t toSDLRendererFlip(std::vector<Flip> flip);
     };
 }
 
