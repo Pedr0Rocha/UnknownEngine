@@ -1,10 +1,12 @@
 /* Unknown Engine Project */
 
-#ifndef UNK_RESOURCES_H
-#define UNK_RESOURCES_H
+#ifndef UNK_SDL_RESOURCES_H
+#define UNK_SDL_RESOURCES_H
 
 #include "SDL2/SDL.h"
 
+#include "unk/core/Resources.h"
+#include "unk/core/Renderer.h"
 #include "unk/core/TextureInfo.h"
 
 #include <map>
@@ -12,35 +14,28 @@
 #include <memory>
 
 namespace unk {
-    class Renderer;
-
     /**
      * @brief Class responsible for managing the resources of the program.
      *
      * @details It loads an @c SDL_Texture for each different file name. As it manages
      * all resources, it should be treated as a singleton class.
      */
-    class Resources {
-        private:
-            std::map<TextureInfo, SDL_Texture*> Map;
-
+    class SDLResources : public TResources<SDL_Texture*> {
         public:
-            Resources();
-            ~Resources();
+            SDLResources();
+            ~SDLResources();
 
-            /// @brief Returns true if the texture is loaded.
-            bool hasTexture(TextureInfo info);
+            bool hasTexture(TextureInfo info) override;
 
             /// @brief Loads a texture if it has not already been loaded.
             void loadTexture(TextureInfo info, std::shared_ptr<Renderer> renderer);
-            /// @brief Yields the @c width and @c height of the texture.
             void getTextureMeasures(TextureInfo info, int *width, int *height);
-            /// @brief Destroys all previously loaded textures.
-            void clear();
+            void destroyAll() override;
 
             /// @brief Returns the @c SDL_Texture related to @c info.
-            SDL_Texture *getTexture(TextureInfo info);
+            SDL_Texture *getTexture(TextureInfo info) override;
     };
+
 }
 
 #endif
