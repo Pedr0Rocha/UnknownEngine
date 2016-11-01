@@ -4,4 +4,5 @@ add_library (UNKCore
     Resources.cpp
     Renderer.cpp
     SDLRenderer.cpp
-    SDLResources.cpp)
+    SDLResources.cpp
+    RenderOptions.cpp)
