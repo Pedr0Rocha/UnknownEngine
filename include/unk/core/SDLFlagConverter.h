@@ -9,6 +9,8 @@
 #include "unk/core/RenderOptions.h"
 #include "unk/utils/UnkExceptions.h"
 
+#include <map>
+
 namespace unk {
     /**
      * @brief Converts @a UnknownEngineFlags to @a SDL_Flags.
