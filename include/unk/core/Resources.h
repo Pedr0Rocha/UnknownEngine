@@ -18,6 +18,7 @@ namespace unk {
              * @brief Enum with all kinds of @c Resources available.
              */
             enum class Kind {
+                SDL
             };
 
         protected:
@@ -39,7 +40,34 @@ namespace unk {
      */
     template <class Texture, class Key = TextureInfo, class CustomMap = std::map<Key, Texture> >
         class TResources : public Resources {
+            protected:
+                CustomMap Map;
+
+                TResources<Texture, Key, CustomMap>(Kind kind);
+
+            public:
+                virtual ~TResources();
+                
+                /// @brief Returns true if the texture is loaded.
+                virtual bool hasTexture(TextureInfo info) = 0;
+                /// @brief Destroys all previously loaded textures.
+                virtual void destroyAll() = 0;
+                /// @brief Returns the @c Texture related to @c info.
+                virtual Texture getTexture(TextureInfo info) = 0;
+
         };
+
 }
+
+template <class Texture, class Key, class CustomMap>
+unk::TResources<Texture, Key, CustomMap>::TResources(Kind kind) : Resources(kind) {
+
+}
+
+template <class Texture, class Key, class CustomMap>
+unk::TResources<Texture, Key, CustomMap>::~TResources() {
+
+}
+
 
 #endif
