@@ -28,6 +28,7 @@ namespace unk {
              * @brief Enum with all kinds of @em Renderer available.
              */
             enum class Kind {
+                SDL
             };
 
         protected:
@@ -39,24 +40,24 @@ namespace unk {
             virtual ~Renderer();
 
             /// @brief Gets the maximum width of a texture.
-            uint32_t getMaxTextureWidth();
+            virtual uint32_t getMaxTextureWidth();
             /// @brief Gets the maximum height of a texture.
-            uint32_t getMaxTextureHeight();
+            virtual uint32_t getMaxTextureHeight();
 
             /// @brief Clears the current rendering target.
-            void clear();
+            virtual void clear();
 
             /// @brief Draws a texture whose info is @p info, with @p opt options.
-            void drawTexture(TextureInfo info, RenderOptions opt = RenderOptions());
+            virtual void drawTexture(TextureInfo info, RenderOptions opt = RenderOptions());
             /// @brief Sets the drawing color.
-            void setDrawColor(Color color);
+            virtual void setDrawColor(Color color);
             /// @brief Gets the drawing color.
-            Color getDrawColor();
+            virtual Color getDrawColor();
 
             /// @brief Draw the @p Point objects specified.
-            void drawPoints(std::vector<Point> points);
+            virtual void drawPoints(std::vector<Point> points);
             /// @brief Draw the lines specified by each two @p Point objects.
-            void drawLines(std::vector<Point> points);
+            virtual void drawLines(std::vector<Point> points);
 
             /** 
              * @brief Draw the @p Rect objects specified.
@@ -71,14 +72,14 @@ namespace unk {
              * be the same as the drawing color. If @p false, @p color
              * specifies de color.
              */
-            void drawRects(std::vector<Rect> rects, bool fill = false,
+            virtual void drawRects(std::vector<Rect> rects, bool fill = false,
                     bool sameColor = true, Color color = Color());
 
             /// @brief Actually renders the intern buffer into the Window.
-            void render();
+            virtual void render();
 
             /// @brief Gets the @c Renderer kind. Is called by isInstanceOf.
-            Kind getKind() const;
+            virtual Kind getKind() const;
             
     };
 }
