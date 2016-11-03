@@ -69,6 +69,9 @@ namespace unk {
             /// @brief Creates a texture from a surface.
             SDL_Texture *createTextureFromSurface(SDL_Surface *surface);
 
+            /// @brief Returns true if @p base has the same kind as this.
+            static bool isInstance(const Renderer *base);
+
         private:
             void initSDLRenderer(std::vector<Flags> flags);
             void setRenderDrawColor(Color color);

@@ -34,6 +34,9 @@ namespace unk {
 
             /// @brief Returns the @c SDL_Texture related to @c info.
             SDL_Texture *getTexture(TextureInfo info) override;
+
+            /// @brief Returns true if @p base has the same kind as this.
+            static bool isInstance(const Resources *base);
     };
 
 }
