@@ -54,8 +54,12 @@ void unk::Window::setPosition(uint32_t x, uint32_t y) {
     throw FunctionNotImplementedException("setPosition");
 }
 
-void unk::Window::setOpacity(double opacity) {
+void unk::Window::setOpacity(float opacity) {
     throw FunctionNotImplementedException("setOpacity");
+}
+
+void unk::Window::setBrightness(float brightness) {
+    throw FunctionNotImplementedException("setBrightness");
 }
 
 void unk::Window::drawBorder(bool on) {
@@ -84,15 +88,15 @@ uint32_t unk::Window::getWidth() {
 
 uint32_t unk::Window::getHeight() {
     throw FunctionNotImplementedException("getHeight");
-    return 0.0;
+    return 0;
 }
 
-double unk::Window::getOpacity() {
+float unk::Window::getOpacity() {
     throw FunctionNotImplementedException("getOpacity");
     return 0.0;
 }
 
-double unk::Window::getBrightness() {
+float unk::Window::getBrightness() {
     throw FunctionNotImplementedException("getBrightness");
     return 0.0;
 }
