@@ -19,7 +19,7 @@ namespace unk {
 
 /* Template Implementation */
 template <class Derived, class Base>
-bool isInstanceOf(const Base *base) {
+bool unk::isInstanceOf(const Base *base) {
     return Derived::isInstance(base);
 }
 
