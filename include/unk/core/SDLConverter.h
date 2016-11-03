@@ -1,13 +1,15 @@
 /* Unknown Engine Project */
 
-#ifndef UNK_SDL_FLAG_CONVERTER_H
-#define UNK_SDL_FLAG_CONVERTER_H
+#ifndef UNK_SDL_CONVERTER_H
+#define UNK_SDL_CONVERTER_H
 
 #include "SDL2/SDL.h"
 
 #include "unk/core/Renderer.h"
 #include "unk/core/RenderOptions.h"
 #include "unk/utils/UnkExceptions.h"
+#include "unk/utils/Point.h"
+#include "unk/utils/Rect.h"
 
 #include <map>
 
@@ -33,6 +35,13 @@ namespace unk {
                 /// @brief Returns the @a SDLFlag that corresponds to the @p flag.
                 uint32_t toSDLFlag(FlagType flag);
         };
+
+    /// @brief Converts a @em Point to a @em SDL_Point.
+    SDL_Point toSDL(Point point);
+
+    /// @brief Converts a @em Rect to a @em SDL_Rect.
+    SDL_Rect toSDL(Rect rect);
+
 }
 
 /* Template Implementation */

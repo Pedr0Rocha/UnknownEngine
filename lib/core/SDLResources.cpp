@@ -68,3 +68,7 @@ SDL_Texture *unk::SDLResources::getTexture(TextureInfo info) {
 
     return nullptr;
 }
+
+bool unk::SDLResources::isInstance(const Resources *base) {
+    return Kind::SDL == base->getKind();
+}

@@ -1,7 +1,6 @@
 /* Unknown Engine Project */
 
 #include "unk/core/RenderOptions.h"
-#include "unk/core/SDLFlagConverter.h"
 #include "unk/utils/UnkExceptions.h"
 
 unk::RenderOptions::RenderOptions() {
