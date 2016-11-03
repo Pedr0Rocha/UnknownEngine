@@ -13,12 +13,3 @@ unk::Rect::Rect(int x, int y, int width, int height) : X(x), Y(y), Width(width),
 
 }
 
-SDL_Rect unk::Rect::toSDLRect() {
-	SDL_Rect rect;
-	rect.x = X;
-	rect.y = Y;
-	rect.w = Width;
-	rect.h = Height;
-
-	return rect;
-}

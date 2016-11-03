@@ -16,8 +16,6 @@ namespace unk {
 
             Point();
             Point(int x, int y);
-
-            SDL_Point toSDLPoint();
 	};
 
 }

@@ -10,10 +10,3 @@ unk::Point::Point() {
 unk::Point::Point(int x, int y) : X(x), Y(y) {
 }
 
-SDL_Point unk::Point::toSDLPoint() {
-    SDL_Point point;
-    point.x = this->X;
-    point.y = this->Y;
-
-    return point;
-}

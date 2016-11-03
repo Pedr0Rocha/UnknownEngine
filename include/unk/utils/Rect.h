@@ -15,7 +15,6 @@ namespace unk {
 
 			Rect();
 			Rect(int x, int y, int width, int height);
-			SDL_Rect toSDLRect();
 	};
 }
 
