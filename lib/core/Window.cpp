@@ -4,6 +4,8 @@
 
 #include "unk/utils/UnkExceptions.h"
 
+#include <memory>
+
 unk::Window::Window(Kind kind) : K(kind) {
 }
 
@@ -54,11 +56,11 @@ void unk::Window::setPosition(uint32_t x, uint32_t y) {
     throw FunctionNotImplementedException("setPosition");
 }
 
-void unk::Window::setOpacity(float opacity) {
+void unk::Window::setOpacity(double opacity) {
     throw FunctionNotImplementedException("setOpacity");
 }
 
-void unk::Window::setBrightness(float brightness) {
+void unk::Window::setBrightness(double brightness) {
     throw FunctionNotImplementedException("setBrightness");
 }
 
@@ -91,12 +93,12 @@ uint32_t unk::Window::getHeight() {
     return 0;
 }
 
-float unk::Window::getOpacity() {
+double unk::Window::getOpacity() {
     throw FunctionNotImplementedException("getOpacity");
     return 0.0;
 }
 
-float unk::Window::getBrightness() {
+double unk::Window::getBrightness() {
     throw FunctionNotImplementedException("getBrightness");
     return 0.0;
 }

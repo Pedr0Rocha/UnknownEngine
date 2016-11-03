@@ -64,9 +64,9 @@ namespace unk {
             /// @brief Sets the position of the window to (@p x, @p y).
             virtual void setPosition(uint32_t x, uint32_t y);
             /// @brief Sets the opacity to @p opacity.
-            virtual void setOpacity(float opacity);
+            virtual void setOpacity(double opacity);
             /// @brief Sets the brightness to @p brightness.
-            virtual void setBrightness(float brightness);
+            virtual void setBrightness(double brightness);
 
             /// @brief Draws the border of the window if @p on set.
             virtual void drawBorder(bool on);
@@ -82,9 +82,9 @@ namespace unk {
             /// @brief Returns the @c height of the window.
             virtual uint32_t getHeight();
             /// @brief Returns the @c opacity of the window.
-            virtual float getOpacity();
+            virtual double getOpacity();
             /// @brief Returns the @c brightness of the window.
-            virtual float getBrightness();
+            virtual double getBrightness();
 
             Kind getKind() const;
     };

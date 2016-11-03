@@ -1,55 +1,62 @@
 /* Unknown Engine Project */
 
+#include "SDL2/SDL.h"
+#include "SDL2/SDL_image.h"
+
+#include "unk/core/SDLWindow.h"
+#include "unk/core/SDLConverter.h"
 #include "unk/core/Window.h"
+#include "unk/core/Resources.h"
 #include "unk/utils/SDLException.h"
 
 #include <vector>
+#include <memory>
 
 static unk::SDLFlagConverter<unk::SDLWindow::Flags> flagConverter = {
-    { unk::SDLRenderer::Flags::SOFTWARE,     SDL_RENDERER_SOFTWARE       },
-    { unk::SDLRenderer::Flags::ACCELERATED,  SDL_RENDERER_ACCELERATED    },
-    { unk::SDLRenderer::Flags::VSYNC,        SDL_RENDERER_PRESENTVSYNC   },
-    { unk::SDLRenderer::Flags::TEXTURE,      SDL_RENDERER_TARGETTEXTURE  }
+    { unk::SDLWindow::Flags::OPENGL,        SDL_WINDOW_OPENGL           },
+    { unk::SDLWindow::Flags::BORDERLESS,    SDL_WINDOW_BORDERLESS       },
+    { unk::SDLWindow::Flags::RESIZABLE,     SDL_WINDOW_RESIZABLE        },
 };
 
-unk::Window::Window(std::string title, int x, int y, int width, int height, 
-    std::vector<Flags> flags) : Window(Window::Kind::SDL), Title(title), X(x), Y(y), Width(width), Height(height) {
+unk::SDLWindow::SDLWindow(std::string title, int x, int y, int width, int height, 
+    std::vector<unk::SDLWindow::Flags> flags) : Window(Window::Kind::SDL), 
+    Title(title), X(x), Y(y), Width(width), Height(height) {
     
-    unk::Window::initWindow(title, x, y, width, height, flags);
+    initWindow(title, x, y, width, height, flags);
 }
 
-unk::Window::Window(std::string title) : Window(Window::Kind::SDL), Title(title) {
-    unk::Window::initWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 0, 0, {});
+unk::SDLWindow::SDLWindow(std::string title) : Window(Window::Kind::SDL), Title(title) {
+    initWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 0, 0, {});
 }
 
-unk::Window::Window(std::string title, int width, int height) : Window(Window::Kind::SDL), Title(title), 
-    Width(width), Height(height) {
+unk::SDLWindow::SDLWindow(std::string title, int width, int height) : Window(Window::Kind::SDL), 
+    Title(title), Width(width), Height(height) {
 
-    unk::Window::initWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
+    initWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
         width, height, {});
 }
 
-unk::Window::~Window() {
-    SDL_DestroyWindow(SDLWindow);
+unk::SDLWindow::~SDLWindow() {
+    SDL_DestroyWindow(SDLw);
 }
 
-void unk::Window::initWindow(std::string title, int x, int y, int width, int height, 
-    std::vector<Flags> flags) {
+void unk::SDLWindow::initWindow(std::string title, int x, int y, int width, int height, 
+    std::vector<unk::SDLWindow::Flags> flags) {
     
     SDL_Window *sdlWindow;
 
-    uint32_t sdlFlags = unk::Window::toSDLFlags(flags);
+    uint32_t sdlFlags = flagConverter.toSDLFlags(flags);
 
     sdlWindow = SDL_CreateWindow(title.c_str(), x, y, width, height, sdlFlags);
 
     if (sdlWindow == nullptr) 
         throw SDLException();
 
-    SDLWindow = sdlWindow;
+    SDLw = sdlWindow;
 }
 
-SDL_Renderer* unk::Window::createRenderer(int index, uint32_t flags) {
-    SDL_Renderer *renderer = SDL_CreateRenderer(SDLWindow, index, flags);
+SDL_Renderer* unk::SDLWindow::createRenderer(int index, uint32_t flags) {
+    SDL_Renderer *renderer = SDL_CreateRenderer(SDLw, index, flags);
 
     if (renderer == nullptr)
         throw SDLException();
@@ -57,141 +64,108 @@ SDL_Renderer* unk::Window::createRenderer(int index, uint32_t flags) {
     return renderer;
 }
 
-uint32_t unk::Window::toSDLFlag(Flags flag) {
-    switch (flag) {
-        case Flags::OPENGL:
-            return SDL_WINDOW_OPENGL;
-        case Flags::BORDERLESS:
-            return SDL_WINDOW_BORDERLESS;
-        case Flags::RESIZABLE:
-            return SDL_WINDOW_RESIZABLE;
-        default:
-            throw SDLException("Invalid Window Flag.");
-    }
-}
-
-uint32_t unk::Window::toSDLFlags(std::vector<Flags> flags) {
-    uint32_t sdlFlags = 0;
-
-    for (auto flag : flags) 
-        sdlFlags |= toSDLFlag(flag);
-
-    return sdlFlags;
-}
-
-void unk::Window::setFullscreenMode() {
-    int ret = SDL_SetWindowFullscreen(SDLWindow, SDL_WINDOW_FULLSCREEN);
+void unk::SDLWindow::setFullscreenMode() {
+    int ret = SDL_SetWindowFullscreen(SDLw, SDL_WINDOW_FULLSCREEN);
 
     if (ret < 0)
         throw SDLException();
 }
 
-void unk::Window::setWindowedMode() {
-    int ret = SDL_SetWindowFullscreen(SDLWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
+void unk::SDLWindow::setWindowedMode() {
+    int ret = SDL_SetWindowFullscreen(SDLw, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
     if (ret < 0)
         throw SDLException();
 }
 
-void unk::Window::minimizeWindow() {
-    SDL_MinimizeWindow(SDLWindow);
+void unk::SDLWindow::minimize() {
+    SDL_MinimizeWindow(SDLw);
 }
 
-void unk::Window::maximizeWindow() {
-    SDL_MaximizeWindow(SDLWindow);
+void unk::SDLWindow::maximize() {
+    SDL_MaximizeWindow(SDLw);
 }
 
-void unk::Window::restoreWindow() {
-    SDL_RestoreWindow(SDLWindow);
+void unk::SDLWindow::restore() {
+    SDL_RestoreWindow(SDLw);
 }
 
-void unk::Window::setTitle(std::string title) {
-    SDL_SetWindowTitle(SDLWindow, title.c_str());
+void unk::SDLWindow::setTitle(std::string title) {
+    SDL_SetWindowTitle(SDLw, title.c_str());
 }
 
-void unk::Window::setIcon(std::string iconName) {
-    /* SDL_SetWindowIcon needs a surface to change the icon */
+void unk::SDLWindow::setIcon(std::string iconName) {
+    SDL_Surface *surface = IMG_Load(iconName.c_str());
+
+    SDL_SetWindowIcon(SDLw, surface);
 }
 
-void unk::Window::setSize(uint32_t width, uint32_t height) {
+void unk::SDLWindow::setSize(uint32_t width, uint32_t height) {
     if (width <= 0 || height <= 0)
         throw SDLException();
 
-    SDL_SetWindowSize(SDLWindow, width, height);
+    SDL_SetWindowSize(SDLw, width, height);
 }
 
-void unk::Window::setMaximumSize(uint32_t width, uint32_t height) {
-    SDL_SetWindowMaximumSize(SDLWindow, width, height);
+void unk::SDLWindow::setMaximumSize(uint32_t width, uint32_t height) {
+    SDL_SetWindowMaximumSize(SDLw, width, height);
 }
 
-void unk::Window::setMinimumSize(uint32_t width, uint32_t height) {
-    SDL_SetWindowMinimumSize(SDLWindow, width, height);
+void unk::SDLWindow::setMinimumSize(uint32_t width, uint32_t height) {
+    SDL_SetWindowMinimumSize(SDLw, width, height);
 }
 
-void unk::Window::setPosition(uint32_t x, uint32_t y) {
-    SDL_SetWindowPosition(SDLWindow, x, y);
+void unk::SDLWindow::setPosition(uint32_t x, uint32_t y) {
+    SDL_SetWindowPosition(SDLw, x, y);
 }
 
-void unk::Window::setOpacity(float opacity) {
-    int ret = SDL_SetWindowOpacity(SDLWindow, opacity);
+void unk::SDLWindow::setBrightness(double brightness) {
+    int ret = SDL_SetWindowBrightness(SDLw, brightness);
 
     if (ret < 0)
         throw SDLException();
 }
 
-void unk::Window::setBrightness(float brightness) {
-    int ret = SDL_SetWindowBrightness(SDLWindow, brightness);
-
-    if (ret < 0)
-        throw SDLException();
-}
-
-void unk::Window::drawBorder(bool on) {
+void unk::SDLWindow::drawBorder(bool on) {
     if (on)
-        SDL_SetWindowBordered(SDLWindow, SDL_TRUE);
+        SDL_SetWindowBordered(SDLw, SDL_TRUE);
     else
-        SDL_SetWindowBordered(SDLWindow, SDL_FALSE);
+        SDL_SetWindowBordered(SDLw, SDL_FALSE);
 }
 
-std::string unk::Window::getTitle() {
-    std::string title(SDL_GetWindowTitle(SDLWindow));
+std::string unk::SDLWindow::getTitle() {
+    std::string title(SDL_GetWindowTitle(SDLw));
     return title;
 }
 
-uint32_t unk::Window::getX() {
-    int *x = malloc(sizeof(int));
-    SDL_GetWindowPosition(SDLWindow, x, NULL);
-    return *x;
+uint32_t unk::SDLWindow::getX() {
+    int x;
+    SDL_GetWindowPosition(SDLw, &x, NULL);
+    return x;
 }
 
-uint32_t unk::Window::getY() {
-    int *y = malloc(sizeof(int));
-    SDL_GetWindowPosition(SDLWindow, NULL, y);
-    return *y;
+uint32_t unk::SDLWindow::getY() {
+    int y;
+    SDL_GetWindowPosition(SDLw, NULL, &y);
+    return y;
 }
 
-uint32_t unk::Window::getWidth() {
-    int *width = malloc(sizeof(int));
-    SDL_GetWindowPosition(SDLWindow, width, NULL);
-    return *width;
+uint32_t unk::SDLWindow::getWidth() {
+    int width;
+    SDL_GetWindowPosition(SDLw, &width, NULL);
+    return width;
 }
 
-uint32_t unk::Window::getHeight() {
-    int *height = malloc(sizeof(int));
-    SDL_GetWindowPosition(SDLWindow, NULL, height);
-    return *height;
+uint32_t unk::SDLWindow::getHeight() {
+    int height;
+    SDL_GetWindowPosition(SDLw, NULL, &height);
+    return height;
 }
 
-float unk::Window::getOpacity() {
-    float *opacity = malloc(sizeof(float));
-    int ret = SDL_GetWindowOpacity(SDLWindow, opacity);
-
-    if (ret < 0)
-        throw SDLException();
-
-    return *opacity;
+double unk::SDLWindow::getBrightness() {
+    return SDL_GetWindowBrightness(SDLw);
 }
 
-float unk::Window::getBrightness() {
-    return SDL_GetWindowBrightness(SDLWindow);
+bool unk::SDLWindow::isInstance(SDLWindow *base) {
+    return Kind::SDL == base->getKind();
 }
