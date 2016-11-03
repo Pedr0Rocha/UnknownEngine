@@ -4,7 +4,7 @@
 
 #include "unk/core/SDLRenderer.h"
 #include "unk/core/SDLResources.h"
-#include "unk/core/SDLFlagConverter.h"
+#include "unk/core/SDLConverter.h"
 #include "unk/utils/SDLException.h"
 
 static unk::SDLFlagConverter<unk::SDLRenderer::Flags> flagConverter = {
@@ -62,7 +62,7 @@ void unk::SDLRenderer::drawPoints(std::vector<Point> points) {
 
     int idx = 0;
     for (auto point : points)
-        sdlPoints[idx++] = point.toSDLPoint();
+        sdlPoints[idx++] = toSDL(point);
 
     int ret = SDL_RenderDrawPoints(SDLr, sdlPoints, idx);
 
@@ -78,7 +78,7 @@ void unk::SDLRenderer::drawLines(std::vector<Point> points) {
 
     int idx = 0;
     for (auto point : points)
-        sdlPoints[idx++] = point.toSDLPoint();
+        sdlPoints[idx++] = toSDL(point);
 
     int ret = SDL_RenderDrawLines(SDLr, sdlPoints, idx);
 
@@ -95,7 +95,7 @@ void unk::SDLRenderer::drawRects(std::vector<Rect> rects,
 
     int idx = 0;
     for (auto rect : rects)
-        sdlRects[idx++] = rect.toSDLRect();
+        sdlRects[idx++] = toSDL(rect);
 
     int ret = SDL_RenderDrawRects(SDLr, sdlRects, idx);
 
@@ -143,4 +143,8 @@ void unk::SDLRenderer::setRenderDrawColor(Color color) {
     if (ret)
         throw SDLException();
 } 
+
+bool unk::SDLRenderer::isInstance(const Renderer *base) {
+    return Kind::SDL == base->getKind();
+}
 

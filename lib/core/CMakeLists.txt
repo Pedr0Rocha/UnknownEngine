@@ -6,4 +6,5 @@ add_library (UNKCore
     Renderer.cpp
     SDLRenderer.cpp
     SDLResources.cpp
-    RenderOptions.cpp)
+    RenderOptions.cpp
+    SDLConverter.cpp)
