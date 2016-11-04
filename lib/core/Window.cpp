@@ -1,7 +1,10 @@
 /* Unknown Engine Project */
 
 #include "unk/core/Window.h"
+
 #include "unk/utils/UnkExceptions.h"
+
+#include <memory>
 
 unk::Window::Window(Kind kind) : K(kind) {
 }
@@ -57,6 +60,10 @@ void unk::Window::setOpacity(double opacity) {
     throw FunctionNotImplementedException("setOpacity");
 }
 
+void unk::Window::setBrightness(double brightness) {
+    throw FunctionNotImplementedException("setBrightness");
+}
+
 void unk::Window::drawBorder(bool on) {
     throw FunctionNotImplementedException("drawBorder");
 }
@@ -83,7 +90,7 @@ uint32_t unk::Window::getWidth() {
 
 uint32_t unk::Window::getHeight() {
     throw FunctionNotImplementedException("getHeight");
-    return 0.0;
+    return 0;
 }
 
 double unk::Window::getOpacity() {

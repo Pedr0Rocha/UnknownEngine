@@ -28,6 +28,7 @@ namespace unk {
              * @brief Enum with all kinds of @c Window available.
              */
             enum class Kind {
+                SDL
             };
 
         protected:
@@ -86,7 +87,6 @@ namespace unk {
             virtual double getBrightness();
 
             Kind getKind() const;
-
     };
 }
 
